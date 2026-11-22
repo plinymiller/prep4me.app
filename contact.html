@@ -198,7 +198,8 @@
   // the message filled in, addressed to ADMIN_EMAIL. Paste a form-delivery
   // endpoint URL here (one that accepts a JSON POST and forwards it to
   // ADMIN_EMAIL) and the form sends directly from the page instead.
-  var FORM_ENDPOINT = "";
+  var FORM_ENDPOINT = "https://api.web3forms.com/submit";
+  var ACCESS_KEY = "a7a0f747-9981-4210-acce-b480e88beb77";
 
   var form = document.getElementById("contact");
   var status = document.getElementById("status");
@@ -290,7 +291,7 @@
     fetch(FORM_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json", "Accept": "application/json" },
-      body: JSON.stringify(data)
+      body: JSON.stringify(Object.assign({ access_key: ACCESS_KEY, subject: "Prep4Me contact: " + data.topic + " - From: " + data.name, from_name: "Prep4Me website" }, data))
     }).then(function (res) {
       if (!res.ok) { throw new Error("HTTP " + res.status); }
       form.reset();

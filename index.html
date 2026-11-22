@@ -125,23 +125,42 @@
     <p class="lead">Prep4Me walks your household through what to have on hand, what is missing, and how to reach each other if you need to stay put for days or weeks.</p>
     <span class="pill" style="margin:0 6px 8px 0">Download for iPhone (coming soon)</span>
     <span class="pill" style="margin:0 6px 8px 0">Download for Android (coming soon)</span>
-    <p style="margin:14px 0 8px">
-      <label for="p4m-name" style="display:block;font-size:0.9rem;color:var(--muted);margin:0 0 6px">Your name (it goes in the subject line of your email)</label>
-      <input id="p4m-name" type="text" autocomplete="name" placeholder="Your name" style="font:inherit;font-size:0.95rem;width:100%;max-width:320px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)">
-    </p>
-    <p style="margin:0">
-      <a id="p4m-beta" data-subject="Beta Test Request - From: " href="mailto:feedback@b-tuff.co?subject=Beta%20Test%20Request%20-%20From%3A%20" style="display:inline-block;border:2px solid var(--accent);color:var(--accent);font-weight:600;font-size:0.95rem;padding:8px 14px;border-radius:10px;text-decoration:none;margin:0 8px 8px 0">Apply to be a beta tester</a>
-      <a id="p4m-feedback" data-subject="Feedback From: " href="mailto:feedback@b-tuff.co?subject=Feedback%20From%3A%20" style="display:inline-block;border:2px solid var(--accent);color:var(--accent);font-weight:600;font-size:0.95rem;padding:8px 14px;border-radius:10px;text-decoration:none;margin:0 8px 8px 0">Send feedback or an idea</a>
-    </p>
+    <form id="p4m-form" novalidate style="margin:14px 0 8px;max-width:420px">
+      <fieldset style="border:0;padding:0;margin:0 0 10px">
+        <legend style="font-size:0.9rem;color:var(--muted);margin:0 0 6px">I'd like to</legend>
+        <label style="margin-right:14px"><input type="radio" name="kind" value="Beta Test Request" checked> Be a beta tester</label>
+        <label><input type="radio" name="kind" value="Feedback"> Send feedback or an idea</label>
+      </fieldset>
+      <input name="name" type="text" autocomplete="name" placeholder="Your name" required maxlength="80" aria-label="Your name" style="font:inherit;font-size:0.95rem;width:100%;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);margin:0 0 8px;box-sizing:border-box">
+      <input name="email" type="email" autocomplete="email" placeholder="Email address" required maxlength="120" aria-label="Email address" style="font:inherit;font-size:0.95rem;width:100%;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);margin:0 0 8px;box-sizing:border-box">
+      <input name="device" id="p4m-device" type="text" placeholder="Phone type and model (e.g. iPhone 16)" maxlength="60" aria-label="Phone type and model" style="font:inherit;font-size:0.95rem;width:100%;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);margin:0 0 8px;box-sizing:border-box">
+      <textarea name="message" placeholder="Anything you'd like to add (optional for beta requests)" maxlength="1500" aria-label="Message" style="font:inherit;font-size:0.95rem;width:100%;min-height:90px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);margin:0 0 8px;box-sizing:border-box"></textarea>
+      <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" style="display:none">
+      <button type="submit" id="p4m-send" style="font:inherit;display:inline-block;border:2px solid var(--accent);background:transparent;color:var(--accent);font-weight:600;font-size:0.95rem;padding:8px 14px;border-radius:10px;cursor:pointer">Send</button>
+      <p id="p4m-status" role="status" aria-live="polite" style="font-size:0.9rem;margin:8px 0 0"></p>
+    </form>
     <script>
       (function () {
-        var nameBox = document.getElementById("p4m-name");
-        ["p4m-beta", "p4m-feedback"].forEach(function (id) {
-          var link = document.getElementById(id);
-          link.addEventListener("click", function () {
-            var name = nameBox.value.replace(/\s+/g, " ").trim();
-            link.href = "mailto:feedback@b-tuff.co?subject=" + encodeURIComponent(link.getAttribute("data-subject") + name);
-          });
+        var ACCESS_KEY = "a7a0f747-9981-4210-acce-b480e88beb77";
+        var f = document.getElementById("p4m-form"), st = document.getElementById("p4m-status"), btn = document.getElementById("p4m-send");
+        f.addEventListener("submit", function (e) {
+          e.preventDefault();
+          var kind = f.kind.value, name = f.name.value.trim(), email = f.email.value.trim(), msg = f.message.value.trim();
+          if (f.botcheck.checked) { return; }
+          if (name.length < 2) { st.textContent = "Please enter your name."; return; }
+          if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { st.textContent = "Please enter a valid email address."; return; }
+          if (kind === "Feedback" && msg.length < 5) { st.textContent = "Please tell us your feedback or idea."; return; }
+          btn.disabled = true; btn.textContent = "Sending"; st.textContent = "";
+          fetch("https://api.web3forms.com/submit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Accept": "application/json" },
+            body: JSON.stringify({ access_key: ACCESS_KEY, subject: "Prep4Me " + kind + " - From: " + name, from_name: "Prep4Me website", name: name, email: email, request: kind, phone_model: f.device.value.trim(), message: msg || "(none)" })
+          }).then(function (r) { return r.json(); }).then(function (j) {
+            if (!j.success) { throw new Error(j.message); }
+            f.reset(); st.textContent = kind === "Feedback" ? "Thanks! Your feedback was sent." : "Thanks! You're on the beta list and we'll email your invitation.";
+          }).catch(function () {
+            st.textContent = "Sorry, that didn't go through. Please try again or email admin@prep4me.app.";
+          }).then(function () { btn.disabled = false; btn.textContent = "Send"; });
         });
       })();
     </script>
@@ -306,7 +325,7 @@
       <h3>If you contact us</h3>
       <p>Our <a href="contact.html">contact form</a> asks for your name, email address, phone number and message. If you email us directly, we receive your email address and whatever you write.</p>
       <p>We use this information only to answer you. We do not add you to any mailing list, we do not call or text you for marketing, and we do not sell or share it. Messages are kept in our email inbox until the matter is closed and are deleted on request.</p>
-      <p>Our beta tester and feedback forms are run on Google Forms and require a Google sign-in, which keeps automated spam out. They record your Google account email and what you enter: for a beta request, your name, the email address for your invitation, and your phone type and model; for feedback, your message. We use this only to invite you to test and to respond to you. Google's privacy policy applies to the forms. Responses are deleted on request.</p>
+      <p>Our beta tester and feedback form is delivered by Web3Forms, a form-to-email service, and arrives in our email inbox. It records what you enter: your name, your email address, your phone type and model, and any message. We use this only to invite you to test and to respond to you. Web3Forms' privacy policy applies to the form delivery. Responses are deleted on request.</p>
 
       <h3>Changes to this policy</h3>
       <p>This policy is subject to change as future versions of Prep4Me are released. If the app changes in a way that affects privacy, we will update this page and the date at the top before the change is released. The current policy is always the one on this page.</p>
