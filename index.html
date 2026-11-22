@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prep4Me: A Shelter in Place Plan</title>
+<meta name="description" content="Prep4Me is an iPhone and Android app that walks your household through building a shelter-in-place plan. Support and privacy policy.">
+<style>
+  :root {
+    --bg: #f8f9fc;
+    --surface: #ffffff;
+    --ink: #14233d;
+    --muted: #56627a;
+    --line: #d9deea;
+    --accent: #1d3f73;
+    --accent-ink: #ffffff;
+    --gold: #b98f2e;
+    --note: #fbf3dc;
+    --note-line: #e6d59a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1726;
+      --surface: #182236;
+      --ink: #eef1f7;
+      --muted: #a3aec4;
+      --line: #2b3852;
+      --accent: #9dbcf0;
+      --accent-ink: #0f1726;
+      --gold: #d9b662;
+      --note: #2b2716;
+      --note-line: #5a4f22;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 17px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-text-size-adjust: 100%;
+  }
+  a { color: var(--accent); }
+  a:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 22px; }
+
+  header.site {
+    position: sticky; top: 0; z-index: 10;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+  }
+  header.site .wrap {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; padding-top: 14px; padding-bottom: 14px; flex-wrap: wrap;
+  }
+  .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.15rem; letter-spacing: -0.01em; color: var(--ink); text-decoration: none; }
+  .brand span { color: var(--gold); }
+  .brand img { width: 38px; height: 38px; object-fit: contain; background: #fff; border-radius: 8px; }
+  .hero-logo { display: block; width: 220px; max-width: 60%; height: auto; background: #fff; border-radius: 18px; margin: 0 0 28px; }
+  nav a { margin-left: 18px; text-decoration: none; font-size: 0.95rem; font-weight: 600; }
+  nav a:first-child { margin-left: 0; }
+  nav a:hover { text-decoration: underline; }
+
+  .hero { padding: 64px 0 40px; }
+  .hero h1 { font-size: clamp(2rem, 6vw, 3rem); line-height: 1.1; letter-spacing: -0.02em; margin: 0 0 16px; }
+  .hero p.lead { font-size: 1.2rem; color: var(--muted); margin: 0 0 24px; max-width: 34em; }
+  .pill {
+    display: inline-block; background: var(--accent); color: var(--accent-ink);
+    font-weight: 600; font-size: 0.95rem; padding: 8px 14px; border-radius: 999px;
+  }
+  .facts { list-style: none; padding: 0; margin: 28px 0 0; display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+  .facts li { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; font-size: 0.97rem; }
+  .facts strong { display: block; margin-bottom: 2px; }
+
+  section { padding: 44px 0; border-top: 1px solid var(--line); scroll-margin-top: 64px; }
+  h2 { font-size: 1.7rem; letter-spacing: -0.015em; margin: 0 0 6px; }
+  h3 { font-size: 1.1rem; margin: 30px 0 6px; }
+  .sub { color: var(--muted); margin: 0 0 22px; }
+  ul { padding-left: 1.2em; }
+  li { margin: 4px 0; }
+
+  .contact { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; margin: 0 0 26px; }
+  .contact p { margin: 0; }
+  .contact p + p { margin-top: 6px; color: var(--muted); font-size: 0.95rem; }
+
+  details { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; margin: 10px 0; }
+  summary { cursor: pointer; padding: 14px 18px; font-weight: 600; list-style: none; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; float: right; color: var(--muted); font-weight: 400; }
+  details[open] summary::after { content: "\2212"; }
+  details .a { padding: 0 18px 16px; }
+  details .a p { margin: 0 0 8px; }
+
+  .note { background: var(--note); border: 1px solid var(--note-line); border-radius: 12px; padding: 16px 18px; margin: 22px 0; }
+  .note p { margin: 0; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0 4px; font-size: 0.96rem; }
+  th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  th { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+  .scroll { overflow-x: auto; }
+
+  footer { border-top: 1px solid var(--line); padding: 28px 0 48px; color: var(--muted); font-size: 0.9rem; }
+  footer p { margin: 4px 0; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="logo-mark.jpg" alt="" width="38" height="38">Prep<span>4</span>Me</a>
+    <nav aria-label="Page sections">
+      <a href="#support">Support</a>
+      <a href="#privacy">Privacy Policy</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <div class="wrap hero">
+    <img class="hero-logo" src="logo.jpg" alt="Prep4Me logo: a shield with stars and stripes, a padlock and the numeral 4" width="636" height="720">
+    <h1>A shelter-in-place plan for your own home.</h1>
+    <p class="lead">Prep4Me walks your household through what to have on hand, what is missing, and how to reach each other if you need to stay put for days or weeks.</p>
+    <span class="pill" style="margin:0 6px 8px 0">Download for iPhone (coming soon)</span>
+    <span class="pill" style="margin:0 6px 8px 0">Download for Android (coming soon)</span>
+    <p style="margin:14px 0 8px">
+      <label for="p4m-name" style="display:block;font-size:0.9rem;color:var(--muted);margin:0 0 6px">Your name (it goes in the subject line of your email)</label>
+      <input id="p4m-name" type="text" autocomplete="name" placeholder="Your name" style="font:inherit;font-size:0.95rem;width:100%;max-width:320px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)">
+    </p>
+    <p style="margin:0">
+      <a id="p4m-beta" data-subject="Beta Test Request - From: " href="mailto:feedback@b-tuff.co?subject=Beta%20Test%20Request%20-%20From%3A%20" style="display:inline-block;border:2px solid var(--accent);color:var(--accent);font-weight:600;font-size:0.95rem;padding:8px 14px;border-radius:10px;text-decoration:none;margin:0 8px 8px 0">Apply to be a beta tester</a>
+      <a id="p4m-feedback" data-subject="Feedback From: " href="mailto:feedback@b-tuff.co?subject=Feedback%20From%3A%20" style="display:inline-block;border:2px solid var(--accent);color:var(--accent);font-weight:600;font-size:0.95rem;padding:8px 14px;border-radius:10px;text-decoration:none;margin:0 8px 8px 0">Send feedback or an idea</a>
+    </p>
+    <script>
+      (function () {
+        var nameBox = document.getElementById("p4m-name");
+        ["p4m-beta", "p4m-feedback"].forEach(function (id) {
+          var link = document.getElementById(id);
+          link.addEventListener("click", function () {
+            var name = nameBox.value.replace(/\s+/g, " ").trim();
+            link.href = "mailto:feedback@b-tuff.co?subject=" + encodeURIComponent(link.getAttribute("data-subject") + name);
+          });
+        });
+      })();
+    </script>
+
+    <ul class="facts">
+      <li><strong>Sized to your household</strong>Quantities scale with the people, pets and number of days you plan for.</li>
+      <li><strong>Have it, To buy, N/A</strong>One list that tracks what you own and what to pick up.</li>
+      <li><strong>Works offline</strong>Your plan lives on your phone and is there when the network is not.</li>
+      <li><strong>Private by design</strong>No account, no ads, no tracking.</li>
+    </ul>
+
+    <div class="note">
+      <p><strong>Not professional emergency advice.</strong> Prep4Me is a planning aid. Quantity guidance is drawn from Ready.gov and the American Red Cross. In an emergency, call 911 and follow the instructions of local officials.</p>
+    </div>
+  </div>
+
+  <section id="support">
+    <div class="wrap">
+      <h2>Support</h2>
+      <p class="sub">Help with Prep4Me for iPhone and Android.</p>
+
+      <div class="contact">
+        <p><strong>Contact form:</strong> <a href="contact.html">Send us a message</a> &nbsp;·&nbsp; <strong>Email:</strong> <a href="mailto:admin@prep4me.app">admin@prep4me.app</a></p>
+        <p>Tell us your phone model, its iOS or Android version, and what you were doing when the problem happened. Please do not send photos of your plan or contact list unless we ask.</p>
+      </div>
+
+      <h3>Common questions</h3>
+
+      <details>
+        <summary>Do I need an account?</summary>
+        <div class="a"><p>No. There is no sign-up and no login. Your plan is stored on your phone.</p></div>
+      </details>
+
+      <details>
+        <summary>Does the app work without an internet connection?</summary>
+        <div class="a">
+          <p>Yes. Building your plan, updating your list, scanning, expiry reminders and your communication plan all work offline.</p>
+          <p>Three things need a connection: finding stores near you, looking up a product name from a barcode, and searching the web for local services.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>How do I back up my plan or move it to a new phone?</summary>
+        <div class="a">
+          <p><strong>iPhone:</strong> turn on iCloud sync in the app's Settings. Your plan is then kept in your own private iCloud storage and appears on any iPhone signed in to the same Apple Account.</p>
+          <p>If iCloud sync is off, your plan is included in a standard iPhone backup.</p>
+          <p><strong>Android:</strong> turn on "Include my plan in Google backup" in the app's Settings and choose a password. Your plan, medication list and label photos are encrypted on your phone and included in that phone's Google backup. When you set up a new phone from that backup, Prep4Me asks for the password and restores your plan. A forgotten password cannot be recovered.</p>
+          <p>On either phone you can also export the plan as a PDF at any time.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>How do I change my household, time frame or budget?</summary>
+        <div class="a"><p>Open Settings in the app and choose Edit household. Quantities recalculate. Items you already marked and the amounts you have on hand are kept.</p></div>
+      </details>
+
+      <details>
+        <summary>The camera did not read an expiration date correctly.</summary>
+        <div class="a"><p>Stamped and embossed dates are hard to read. The app only suggests a date and always asks you to confirm it. Tap the date to correct it with the date picker.</p></div>
+      </details>
+
+      <details>
+        <summary>I declined a permission. Can I still use the app?</summary>
+        <div class="a">
+          <p>Yes. Every permission is optional. Without the camera you can type items in. Without notifications, expiring items still appear on the home screen. Without location you can enter a ZIP code or town.</p>
+          <p>To change a permission later, open your phone's Settings app and choose Prep4Me.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>Where do the recommended quantities come from?</summary>
+        <div class="a">
+          <p>From public guidance by <a href="https://www.ready.gov/kit" rel="noopener">Ready.gov</a> and the <a href="https://www.redcross.org/get-help/how-to-prepare-for-emergencies/survival-kit-supplies.html" rel="noopener">American Red Cross</a>. That guidance covers roughly the first two weeks. For longer time frames the app scales the numbers and labels them as estimates.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>Does Prep4Me recommend or get paid by any store?</summary>
+        <div class="a"><p>No. Nearby stores come from Apple Maps on iPhone and Google Maps on Android. No business is endorsed, sponsored or ranked for pay, and the app contains no affiliate links.</p></div>
+      </details>
+
+      <details>
+        <summary>How do I delete my data?</summary>
+        <div class="a">
+          <p>Deleting the app removes everything stored on your phone. If you used iCloud sync, also remove the app's data in iPhone Settings, under your name, iCloud, Manage Account Storage.</p>
+          <p>On Android, if you turned on Google backup, also remove it in your Google Account's backup settings. We hold no copy of your plan, so there is nothing for us to delete.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>How do I get a refund?</summary>
+        <div class="a"><p>iPhone purchases are handled by Apple. Request a refund at <a href="https://reportaproblem.apple.com" rel="noopener">reportaproblem.apple.com</a>.</p><p>Android purchases are handled by Google Play. Request a refund from your order history in Google Play.</p></div>
+      </details>
+    </div>
+  </section>
+
+  <section id="privacy">
+    <div class="wrap">
+      <h2>Privacy Policy</h2>
+      <p class="sub">Last updated November 21, 2026. Applies to the Prep4Me app for iPhone and Android and to this website.</p>
+
+      <div class="note">
+        <p><strong>The short version:</strong> the app does not collect your data. Your plan stays on your phone. On iPhone it is also kept in your own iCloud if you turn sync on; on Android it is included in your own Google backup only if you turn that on, and it is encrypted with a password you choose before it leaves your phone. There are no accounts, no ads, no analytics and no tracking. The only personal information we ever receive is what you choose to send us through the contact form, the beta tester and feedback forms, or by email.</p>
+      </div>
+
+      <h3>Who we are</h3>
+      <p>Prep4Me is a product of <a href="https://www.b-tuff.co">B-Tuff LLC</a> ("we", "us"), which publishes the Prep4Me app. Questions about this policy go to <a href="mailto:admin@prep4me.app">admin@prep4me.app</a>.</p>
+
+      <h3>Information the app collects</h3>
+      <p>None. The app has no account system and does not send your plan, your household details, your contacts, your medication list, your photos or your location to us. We run no servers that receive data from the app.</p>
+
+      <h3>Information stored on your device</h3>
+      <p>The app stores what you enter so it can work: household and pet counts, optional names, home features, your supply list with quantities and expiry dates, saved businesses, your communication plan including the contacts and phone numbers you add, and your medication list, including any photos of medication labels you take.</p>
+      <p>This information stays on your phone.</p>
+      <p><strong>iPhone:</strong> if you turn on iCloud sync, it is also stored in your private iCloud storage, which is operated by Apple under your Apple Account. We cannot read it.</p>
+      <p><strong>Android:</strong> there is no sync. Your plan is not backed up unless you turn on "Include my plan in Google backup" in the app's Settings. If you do, Prep4Me encrypts your plan, medication list and label photos on your phone with a password you choose before Android copies them to your Google Account. <a href="https://www.b-tuff.co">B-Tuff LLC</a> never receives the backup, and neither <a href="https://www.b-tuff.co">B-Tuff LLC</a> nor Google can read it. A forgotten password cannot be recovered.</p>
+
+      <h3>Permissions the app may ask for</h3>
+      <div class="scroll">
+      <table>
+        <thead>
+          <tr><th>Permission</th><th>Used for</th><th>What happens to the data</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Camera</td><td>Photographing a medication label</td><td>iPhone: the camera is used only for this. Android: Prep4Me uses your phone's camera app or photo picker and receives only the one picture you take or choose, so it asks for no camera permission. On both, the picture is saved inside the app only, without location details.</td></tr>
+          <tr><td>Location</td><td>Finding stores near you, only while you use that feature (iPhone only)</td><td>iPhone: sent to Apple Maps to run the search. Not stored by the app and never sent to us. Android: Prep4Me does not use your location.</td></tr>
+          <tr><td>Notifications</td><td>Reminders before supplies expire and before a medication refill is due</td><td>Scheduled on your phone. Nothing is sent to a server.</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>The app does not ask for access to your address book. When you add someone from Contacts, an Apple-provided picker shares only the people you choose. On Android, the system picker shares only the one name and number you choose.</p>
+      <p>Every permission is optional and can be changed in your phone's Settings app.</p>
+
+      <h3>When information leaves your device</h3>
+      <p>Only when you use one of these features:</p>
+      <ul>
+        <li><strong>Find nearby.</strong> Your search and your location, or the ZIP code or town you type, go to Apple Maps on iPhone, and Apple's privacy policy applies. On Android, Prep4Me opens Google Maps with the store type and the ZIP code or town you typed, and Google's privacy policy applies there.</li>
+        <li><strong>Search for services.</strong> This opens a Google search in your web browser. Google's privacy policy applies once you leave the app.</li>
+        <li><strong>Sharing and export.</strong> When you email, print or share your plan, it goes where you send it, through the app you pick.</li>
+        <li><strong>iCloud sync (iPhone) or Google backup (Android).</strong> If you turn either on, your plan is stored with Apple or Google as described above.</li>
+      </ul>
+
+      <h3>Health information</h3>
+      <p>The medication list is information you type. It is never sent to <a href="https://www.b-tuff.co">B-Tuff LLC</a> or anyone else. It leaves your phone only if you share the list yourself, or as part of the iCloud sync or Google backup you turned on. Prep4Me does not give medical advice.</p>
+
+      <h3>Tracking, advertising and analytics</h3>
+      <p>The app contains no advertising, no third-party analytics and no tracking software. We do not sell or share personal information, because we do not have any.</p>
+      <p>Apple and Google may give us anonymous, combined statistics about downloads and crashes from people who have agreed to share them with developers. These do not identify you.</p>
+
+      <h3>Other people's information</h3>
+      <p>Your communication plan may contain names and phone numbers of family, friends and neighbors. That information is stored the same way as the rest of your plan and is never sent to us. Please share exported plans only with people who should have those details.</p>
+
+      <h3>Children</h3>
+      <p>Prep4Me is intended for adults planning for their household. It is not directed to children under 13 and we do not knowingly collect information from them or from anyone else.</p>
+
+      <h3>Keeping and deleting your data</h3>
+      <p>Your data stays until you delete it. Removing the app erases everything it stored on your phone. <a href="https://www.b-tuff.co">B-Tuff LLC</a> holds no copy. iCloud data can be removed in iPhone Settings under iCloud storage. A Google backup, if you turned it on, can be removed in your Google Account's backup settings.</p>
+
+      <h3>This website</h3>
+      <p>This site uses no cookies and no analytics. Like any website, the company that hosts it may keep standard server logs, such as IP address and time of visit, for security.</p>
+
+      <h3>If you contact us</h3>
+      <p>Our <a href="contact.html">contact form</a> asks for your name, email address, phone number and message. If you email us directly, we receive your email address and whatever you write.</p>
+      <p>We use this information only to answer you. We do not add you to any mailing list, we do not call or text you for marketing, and we do not sell or share it. Messages are kept in our email inbox until the matter is closed and are deleted on request.</p>
+      <p>Our beta tester and feedback forms are run on Google Forms and require a Google sign-in, which keeps automated spam out. They record your Google account email and what you enter: for a beta request, your name, the email address for your invitation, and your phone type and model; for feedback, your message. We use this only to invite you to test and to respond to you. Google's privacy policy applies to the forms. Responses are deleted on request.</p>
+
+      <h3>Changes to this policy</h3>
+      <p>This policy is subject to change as future versions of Prep4Me are released. If the app changes in a way that affects privacy, we will update this page and the date at the top before the change is released. The current policy is always the one on this page.</p>
+
+      <h3>Contact</h3>
+      <p><a href="mailto:admin@prep4me.app">admin@prep4me.app</a></p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>&copy; 2026 Prep4Me. Prep4Me is a product of <a href="https://www.b-tuff.co">B-Tuff LLC</a>. Available in the United States. <a href="contact.html">Contact us</a></p>
+    <p>Prep4Me is not affiliated with FEMA, Ready.gov or the American Red Cross. iPhone, iCloud, App Store and Apple Maps are trademarks of Apple Inc. Google is a trademark of Google LLC.</p>
+  </div>
+</footer>
+
+</body>
+</html>
