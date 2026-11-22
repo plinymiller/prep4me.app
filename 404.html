@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Page not found | Prep4Me</title>
+<meta name="robots" content="noindex">
+<style>
+  :root {
+    --bg: #f8f9fc;
+    --surface: #ffffff;
+    --ink: #14233d;
+    --muted: #56627a;
+    --line: #d9deea;
+    --accent: #1d3f73;
+    --accent-ink: #ffffff;
+    --gold: #b98f2e;
+    --error: #b3261e;
+    --ok-bg: #e7f3ea;
+    --ok-line: #a9cfb3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1726;
+      --surface: #182236;
+      --ink: #eef1f7;
+      --muted: #a3aec4;
+      --line: #2b3852;
+      --accent: #9dbcf0;
+      --accent-ink: #0f1726;
+      --gold: #d9b662;
+      --error: #ff9a92;
+      --ok-bg: #16301f;
+      --ok-line: #2f5c3d;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 17px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-text-size-adjust: 100%;
+  }
+  a { color: var(--accent); }
+  a:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 0 22px; }
+
+  header.site { background: var(--bg); border-bottom: 1px solid var(--line); }
+  header.site .wrap {
+    max-width: 760px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; padding-top: 14px; padding-bottom: 14px; flex-wrap: wrap;
+  }
+  .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.15rem; letter-spacing: -0.01em; color: var(--ink); text-decoration: none; }
+  .brand span { color: var(--gold); }
+  .brand img { width: 38px; height: 38px; object-fit: contain; background: #fff; border-radius: 8px; }
+  nav a { margin-left: 18px; text-decoration: none; font-size: 0.95rem; font-weight: 600; }
+  nav a:first-child { margin-left: 0; }
+  nav a:hover { text-decoration: underline; }
+
+  main { padding: 40px 0 56px; }
+  .logo { display: block; width: 150px; height: auto; background: #fff; border-radius: 16px; margin: 0 0 22px; }
+  h1 { font-size: clamp(1.8rem, 5vw, 2.4rem); line-height: 1.15; letter-spacing: -0.02em; margin: 0 0 8px; }
+  .sub { color: var(--muted); margin: 0 0 28px; }
+
+  form { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 24px 22px; }
+  .field { margin: 0 0 18px; }
+  .row { display: grid; gap: 0 16px; grid-template-columns: 1fr 1fr; }
+  @media (max-width: 520px) { .row { grid-template-columns: 1fr; } }
+  label { display: block; font-weight: 600; font-size: 0.95rem; margin: 0 0 6px; }
+  .req { color: var(--error); }
+  .hint { display: block; color: var(--muted); font-size: 0.85rem; font-weight: 400; margin-top: 4px; }
+  input, select, textarea {
+    width: 100%; font: inherit; color: var(--ink);
+    background: var(--bg); border: 1px solid var(--line); border-radius: 10px;
+    padding: 11px 12px;
+  }
+  textarea { min-height: 150px; resize: vertical; }
+  input:focus, select:focus, textarea:focus { outline: 3px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+  input[aria-invalid="true"], textarea[aria-invalid="true"] { border-color: var(--error); }
+  .err { color: var(--error); font-size: 0.88rem; margin-top: 5px; min-height: 0; }
+  .trap { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+  button {
+    font: inherit; font-weight: 700; cursor: pointer;
+    background: var(--accent); color: var(--accent-ink);
+    border: 0; border-radius: 999px; padding: 12px 26px;
+  }
+  button[disabled] { opacity: 0.6; cursor: default; }
+  .fine { color: var(--muted); font-size: 0.88rem; margin: 16px 0 0; }
+
+  .status { border-radius: 12px; padding: 16px 18px; margin: 0 0 22px; border: 1px solid var(--ok-line); background: var(--ok-bg); }
+  .status.bad { border-color: var(--error); background: transparent; }
+  .status p { margin: 0; }
+  .status p + p { margin-top: 6px; }
+  [hidden] { display: none !important; }
+
+  .urgent { border-left: 4px solid var(--gold); padding: 4px 0 4px 14px; margin: 26px 0 0; color: var(--muted); font-size: 0.95rem; }
+
+  footer { border-top: 1px solid var(--line); padding: 28px 0 48px; color: var(--muted); font-size: 0.9rem; }
+  footer .wrap { max-width: 760px; }
+  .nf { text-align:center; padding:24px 0 8px; }
+  .nf .logo { margin:0 auto 16px; }
+  .nf .code { font-size:4.5rem; font-weight:800; color:var(--accent); line-height:1; margin:8px 0 4px; letter-spacing:-0.02em; }
+  .nf .btns a { display:inline-block; border:2px solid var(--accent); color:var(--accent); font-weight:600; padding:8px 14px; border-radius:10px; text-decoration:none; margin:6px 4px; }
+  .nf .btns a.primary { background:var(--accent); color:#fff; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="/"><img src="/logo-mark.jpg" alt="" width="38" height="38">Prep<span>4</span>Me</a>
+    <nav aria-label="Site">
+      <a href="/#support">Support</a>
+      <a href="/#privacy">Privacy Policy</a>
+      <a href="/contact.html">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap nf">
+    <img class="logo" src="/logo.jpg" alt="Prep4Me logo" width="636" height="720">
+    <p class="code">404</p>
+    <h1>This page isn't in the plan</h1>
+    <p class="sub">The page you're looking for doesn't exist or has moved. Let's get you back to shelter.</p>
+    <p class="btns"><a class="primary" href="/">Go to the home page</a><a href="/#support">Get support</a><a href="/contact.html">Contact us</a></p>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>&copy; 2026 Prep4Me. Prep4Me is a product of B-Tuff LLC. Available in the United States.</p>
+  </div>
+</footer>
+
+</body>
+</html>
