@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Prep4Me">
+  <rect width="64" height="64" rx="14" fill="#14254A"/>
+  <polygon fill="#B98F2E" points="32,12 36.2,24.2 49,24.6 38.8,32.4 42.4,44.6 32,37.4 21.6,44.6 25.2,32.4 15,24.6 27.8,24.2"/>
+  <g fill="#B4342F">
+    <rect x="22" y="48" width="20" height="2.2" rx="1"/>
+    <rect x="22" y="52.2" width="20" height="2.2" rx="1"/>
+    <rect x="22" y="56.4" width="20" height="2.2" rx="1"/>
+  </g>
+</svg>
