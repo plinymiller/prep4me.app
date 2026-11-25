@@ -104,6 +104,33 @@
 
   footer { border-top: 1px solid var(--line); padding: 28px 0 48px; color: var(--muted); font-size: 0.9rem; }
   footer p { margin: 4px 0; }
+
+  .notify { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 22px 20px; }
+  .notify h2 { margin: 0 0 6px; }
+  .notify .sub { margin: 0 0 16px; }
+  .notify label.f { display: block; font-weight: 600; font-size: 0.95rem; margin: 0 0 4px; }
+  .notify label.f span { font-weight: 400; color: var(--muted); }
+  .notify input[type=email], .notify input[type=text] {
+    font: inherit; font-size: 1rem; width: 100%; min-height: 48px; padding: 10px 14px;
+    border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); margin: 0 0 14px;
+  }
+  .notify input:focus-visible, .notify button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .notify button {
+    font: inherit; font-weight: 700; font-size: 1rem; width: 100%; min-height: 50px; border: 0; border-radius: 10px;
+    background: var(--accent); color: var(--accent-ink); cursor: pointer;
+  }
+  .notify button[disabled] { opacity: 0.7; cursor: wait; }
+  .notify .consent { font-size: 0.88rem; color: var(--muted); margin: 10px 0 0; }
+  .notify .err { color: #b3261e; font-size: 0.92rem; margin: 8px 0 0; min-height: 1em; }
+  @media (prefers-color-scheme: dark) { .notify .err { color: #ffb4ab; } }
+  .notify .done { display: none; text-align: center; padding: 8px 0; }
+  .notify .done .big { font-size: 2.2rem; line-height: 1; margin: 0 0 8px; }
+  .notify .done h3 { margin: 0 0 6px; font-size: 1.3rem; }
+  .notify .done p { margin: 0 0 6px; }
+  .notify.sent form { display: none; }
+  .notify.sent .done { display: block; }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  @media (min-width: 620px) { .notify { padding: 28px 30px; } .notify button { width: auto; padding: 0 28px; } }
 </style>
 </head>
 <body>
@@ -178,6 +205,58 @@
       <p><strong>Not professional emergency advice.</strong> Prep4Me is a planning aid. Quantity guidance is drawn from Ready.gov and the American Red Cross. In an emergency, call 911 and follow the instructions of local officials.</p>
     </div>
   </div>
+
+
+  <section id="notify" aria-labelledby="notify-h">
+    <div class="wrap">
+      <div class="notify" id="notify-card">
+        <h2 id="notify-h">Get notified when Prep4Me launches</h2>
+        <p class="sub">Prep4Me is coming soon to iPhone and Android. Leave your email and we'll let you know the day it's ready.</p>
+        <form id="notify-form" novalidate>
+          <label class="f" for="nf-email">Email address</label>
+          <input id="nf-email" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" required maxlength="120" aria-describedby="nf-consent nf-err">
+          <label class="f" for="nf-name">First name <span>(optional)</span></label>
+          <input id="nf-name" name="name" type="text" autocomplete="given-name" maxlength="80">
+          <div class="hp" aria-hidden="true"><label for="nf-bot">Leave this empty</label><input id="nf-bot" type="checkbox" name="botcheck" tabindex="-1" autocomplete="off"></div>
+          <button type="submit" id="nf-send">Notify me</button>
+          <p class="consent" id="nf-consent">We'll email you when Prep4Me launches. Unsubscribe anytime.</p>
+          <p class="err" id="nf-err" role="alert" aria-live="assertive"></p>
+        </form>
+        <div class="done" role="status" aria-live="polite" tabindex="-1" id="nf-done">
+          <p class="big" aria-hidden="true">&#x2705;</p>
+          <h3>You're on the list!</h3>
+          <p>Thanks for signing up. We'll email you as soon as Prep4Me is ready to download.</p>
+          <p>Wishing you and yours a safe and happy Thanksgiving.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <script>
+    (function () {
+      var ACCESS_KEY = "a7a0f747-9981-4210-acce-b480e88beb77";
+      var card = document.getElementById("notify-card"), f = document.getElementById("notify-form"),
+          err = document.getElementById("nf-err"), btn = document.getElementById("nf-send"), em = document.getElementById("nf-email");
+      f.addEventListener("submit", function (e) {
+        e.preventDefault();
+        if (f.botcheck.checked) { return; }
+        var email = em.value.trim(), name = f.name.value.trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { err.textContent = "Please enter a valid email address."; em.setAttribute("aria-invalid", "true"); em.focus(); return; }
+        em.removeAttribute("aria-invalid"); err.textContent = ""; btn.disabled = true; btn.textContent = "Signing you up\u2026";
+        fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify({ access_key: ACCESS_KEY, subject: "Prep4Me Launch List signup: " + email, from_name: "Prep4Me website",
+            replyto: email, email: email, name: name || "(not given)", list: "Prep4Me Launch List", source: "prep4me.app launch form",
+            signed_up_at: new Date().toISOString(), botcheck: false })
+        }).then(function (r) { return r.json(); }).then(function (j) {
+          if (!j.success) { throw new Error(j.message); }
+          card.classList.add("sent"); document.getElementById("nf-done").focus();
+        }).catch(function () {
+          err.textContent = "Sorry, that didn't go through. Please try again, or email admin@prep4me.app.";
+        }).then(function () { btn.disabled = false; btn.textContent = "Notify me"; });
+      });
+    })();
+  </script>
 
   <section id="support">
     <div class="wrap">
@@ -262,7 +341,7 @@
   <section id="privacy">
     <div class="wrap">
       <h2>Privacy Policy</h2>
-      <p class="sub">Last updated November 21, 2026. Applies to the Prep4Me app for iPhone and Android and to this website.</p>
+      <p class="sub">Last updated November 25, 2026. Applies to the Prep4Me app for iPhone and Android and to this website.</p>
 
       <div class="note">
         <p><strong>The short version:</strong> the app does not collect your data. Your plan stays on your phone. On iPhone it is also kept in your own iCloud if you turn sync on; on Android it is included in your own Google backup only if you turn that on, and it is encrypted with a password you choose before it leaves your phone. There are no accounts, no ads, no analytics and no tracking. The only personal information we ever receive is what you choose to send us through the contact form, the beta tester and feedback forms, or by email.</p>
@@ -326,8 +405,10 @@
 
       <h3>If you contact us</h3>
       <p>Our <a href="contact.html">contact form</a> asks for your name, email address, phone number and message. If you email us directly, we receive your email address and whatever you write.</p>
-      <p>We use this information only to answer you. We do not add you to any mailing list, we do not call or text you for marketing, and we do not sell or share it. Messages are kept in our email inbox until the matter is closed and are deleted on request.</p>
+      <p>We use this information only to answer you. We do not add you to any mailing list unless you join the launch list below, we do not call or text you for marketing, and we do not sell or share it. Messages are kept in our email inbox until the matter is closed and are deleted on request.</p>
       <p>Our beta tester and feedback form is delivered by Web3Forms, a form-to-email service, and arrives in our email inbox. It records what you enter: your name, your email address, your phone type and model, and any message. We use this only to invite you to test and to respond to you. Web3Forms' privacy policy applies to the form delivery. Responses are deleted on request.</p>
+      <h3>Launch list</h3>
+      <p>If you ask to be notified when Prep4Me launches, we receive your email address and, if you give it, your first name. The sign-up is delivered by Web3Forms and kept in our private launch list. We use it only to send a welcome note and to tell you when Prep4Me is available. We never sell or share it. Every email we send includes a way to unsubscribe, or you can email <a href="mailto:admin@prep4me.app">admin@prep4me.app</a> and we will remove you.</p>
 
       <h3>Changes to this policy</h3>
       <p>This policy is subject to change as future versions of Prep4Me are released. If the app changes in a way that affects privacy, we will update this page and the date at the top before the change is released. The current policy is always the one on this page.</p>
