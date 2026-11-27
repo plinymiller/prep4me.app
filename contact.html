@@ -104,6 +104,25 @@
   footer .wrap { max-width: 760px; }
 .pm-loc{white-space:nowrap}.pm-mark{display:inline-block;width:1.15em;height:1.15em;vertical-align:-.2em;margin:0 .15em}
 </style>
+<!--
+  Google Analytics 4 is approved for this WEBSITE only (not the Prep4Me app).
+  The measurement ID below is a placeholder. Do not uncomment until Pliny
+  replaces G-XXXXXXXXXX with the real GA4 ID and Brian has approved publish.
+  When enabling the tag, also widen the page Content-Security-Policy:
+    script-src: add https://www.googletagmanager.com
+    img-src / connect-src: add https://www.google-analytics.com
+      https://www.googletagmanager.com https://*.google-analytics.com
+      https://*.analytics.google.com
+  The app remains no-account, no-ads, no-tracking.
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XXXXXXXXXX');
+</script>
+-->
 </head>
 <body>
 
@@ -112,7 +131,7 @@
     <a class="brand" href="index.html"><img src="logo-mark.jpg" alt="" width="38" height="38">Prep<span>4</span>Me</a>
     <nav aria-label="Site">
       <a href="index.html#support">Support</a>
-      <a href="index.html#privacy">Privacy Policy</a>
+      <a href="privacy.html">Privacy Policy</a>
       <a href="contact.html" aria-current="page">Contact</a>
     </nav>
   </div>
@@ -177,7 +196,7 @@
       </div>
 
       <button type="submit" id="send">Send message</button>
-      <p class="fine">Fields marked <span class="req">*</span> are required. We use what you send only to answer you. See our <a href="index.html#privacy">Privacy Policy</a>.</p>
+      <p class="fine">Fields marked <span class="req">*</span> are required. We use what you send only to answer you. See our <a href="privacy.html">Privacy Policy</a>.</p>
     </form>
 
     <p class="urgent"><strong>This is not an emergency line.</strong> In an emergency, call 911.</p>
@@ -186,7 +205,7 @@
 
 <footer>
   <div class="wrap">
-    <p>&copy; 2026 Prep4Me. a B-Tuff Company · <a href="https://b-tuff.co">B-Tuff.co</a>. Available in the United States.</p>
+    <p>&copy; 2026 Prep4Me. a B-Tuff Company · <a href="https://b-tuff.co">B-Tuff.co</a>. Available in the United States. <a href="privacy.html">Privacy Policy</a></p>
     <p class="pm-loc">Saranac Lake NY <svg class="pm-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="1.15em" height="1.15em" role="img" aria-label="Pliny Miller" focusable="false"><title>Pliny Miller</title><path fill="currentColor" fill-rule="evenodd" d="M0 0H16V16H0ZM2.4 3.4H7.3V8.6H4.3V12.6H2.4ZM4.3 5.1V6.9H5.5V5.1ZM8.2 3.4H10.1L11.05 6.6L12 3.4H13.9V12.6H12.2V7.4L11.05 10.4L9.9 7.4V12.6H8.2Z"/></svg> Shelburne VT</p>
   </div>
 </footer>
@@ -295,9 +314,11 @@
     fetch(FORM_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json", "Accept": "application/json" },
-      body: JSON.stringify(Object.assign({ access_key: ACCESS_KEY, subject: "Prep4Me contact: " + data.topic + " - From: " + data.name, from_name: "Prep4Me website" }, data))
+      body: JSON.stringify(Object.assign({ access_key: ACCESS_KEY, subject: "Prep4Me contact: " + data.topic + " - From: " + data.name, from_name: "Prep4Me website", replyto: data.email }, data))
     }).then(function (res) {
-      if (!res.ok) { throw new Error("HTTP " + res.status); }
+      return res.json().then(function (j) { return { res: res, j: j }; });
+    }).then(function (x) {
+      if (!x.res.ok || !x.j.success) { throw new Error((x.j && x.j.message) || ("HTTP " + x.res.status)); }
       form.reset();
       showStatus(["Thanks. Your message was sent and we will reply by email or phone."], false);
     }).catch(function () {
