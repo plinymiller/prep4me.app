@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Unlisted web-app preview. It is already noindex; keep it out of sitemaps and crawlers.
+Disallow: /app-7fd6be3d99b4fac6/
+
+Sitemap: https://prep4me.app/sitemap.xml
